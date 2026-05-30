@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { getAllContent } from '../lib/content/registry.ts'
+import { getAllContent } from '../lib/content/registry'
 
 async function main() {
   const items = getAllContent().map((i) => ({

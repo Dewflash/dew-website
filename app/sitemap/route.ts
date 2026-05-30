@@ -1,4 +1,4 @@
-import { getAllPaths } from '../lib/content/registry'
+import { getAllPaths } from '../../lib/content/registry'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://dew.codes'
 
