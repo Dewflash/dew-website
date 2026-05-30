@@ -17,7 +17,7 @@ export default function Home() {
       <h3 className="text-2xl font-semibold mb-4">Featured</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {featured.map((f) => (
-          <ContentCard key={f.id} title={f.title} description={f.description} href={f.path} tags={f.tags} />
+          <ContentCard key={f.id} content={f} />
         ))}
       </div>
     </section>
