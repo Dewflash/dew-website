@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dew.codes — Master Architecture Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0e;
+  --bg2: #111114;
+  --bg3: #16161a;
+  --bg4: #1c1c22;
+  --border: #2a2a32;
+  --border2: #353540;
+  --text: #e8e8f0;
+  --text2: #9898a8;
+  --text3: #5a5a6e;
+  --accent: #7c6aff;
+  --accent2: #a594ff;
+  --green: #3ecf8e;
+  --amber: #f5a623;
+  --red: #ff5f5f;
+  --blue: #4a9eff;
+  --pink: #ff6ec7;
+  --teal: #2dd4bf;
+
+  /* pillar colors */
+  --build: #7c6aff;
+  --track: #3ecf8e;
+  --explore: #4a9eff;
+  --curate: #ff6ec7;
+  --support: #f5a623;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ─── LAYOUT ─── */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  margin-left: 220px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .wordmark {
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.sidebar-logo .tagline {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.sidebar-nav {
+  padding: 12px 0;
+  flex: 1;
+}
+
+.nav-section {
+  padding: 8px 16px 4px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 13px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { color: var(--text); background: var(--bg3); }
+.nav-item.active { color: var(--accent2); border-left-color: var(--accent); background: rgba(124,106,255,0.08); }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── HEADER STRIP ─── */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 16px;
+  color: var(--text);
+}
+.topbar-pills {
+  display: flex;
+  gap: 6px;
+}
+.pill {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  background: var(--bg3);
+  transition: all 0.15s;
+}
+.pill:hover, .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ─── CONTENT ─── */
+.content {
+  padding: 32px;
+  max-width: 960px;
+}
+
+.section {
+  display: none;
+}
+.section.visible {
+  display: block;
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(124,106,255,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  color: var(--text);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.hero h1 span { color: var(--accent2); font-style: italic; }
+.hero p {
+  color: var(--text2);
+  font-size: 14px;
+  max-width: 600px;
+  line-height: 1.7;
+}
+.hero-pillars {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.pillar-badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ─── CARD GRID ─── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--border2); }
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+}
+.card-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: 'DM Mono', monospace;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--bg4);
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ─── TREE ─── */
+.tree-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.tree-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg3);
+}
+.tree-header-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+}
+.tree-body {
+  padding: 16px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+
+.tree-path { color: var(--text2); }
+.tree-branch { color: var(--text3); }
+.tree-leaf { color: var(--text2); }
+.tree-leaf.tool { color: var(--build); }
+.tree-leaf.seo { color: var(--green); }
+.tree-leaf.api { color: var(--blue); }
+.tree-leaf.mvp { color: var(--amber); }
+
+.comment { color: var(--text3); font-style: italic; }
+.comment.suggestion { color: rgba(245,166,35,0.7); }
+.comment.seo { color: rgba(62,207,142,0.7); }
+.comment.api-note { color: rgba(74,158,255,0.7); }
+.comment.warn { color: rgba(255,95,95,0.6); }
+
+/* ─── IMPL SECTIONS ─── */
+.impl-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.impl-block-header {
+  padding: 14px 20px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.impl-block-header:hover { background: var(--bg4); }
+.impl-number {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.impl-title {
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+}
+.impl-chevron {
+  color: var(--text3);
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+.impl-block.open .impl-chevron { transform: rotate(180deg); }
+.impl-body {
+  display: none;
+  padding: 20px;
+}
+.impl-block.open .impl-body { display: block; }
+
+/* ─── CODE BLOCKS ─── */
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+.code-key { color: var(--accent2); }
+.code-val { color: var(--green); }
+.code-str { color: var(--amber); }
+.code-comment { color: var(--text3); }
+.code-type { color: var(--blue); }
+.code-path { color: var(--teal); }
+
+/* ─── TABLE ─── */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.ref-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg3);
+  color: var(--text2);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.ref-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+}
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table td:first-child { font-family: 'DM Mono', monospace; color: var(--teal); font-size: 12px; }
+.ref-table .tag-cell { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* ─── MVP SPECIFIC ─── */
+.mvp-phase {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.mvp-phase-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.phase-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  color: var(--text3);
+  line-height: 1;
+}
+.phase-info { flex: 1; }
+.phase-title { font-weight: 500; font-size: 15px; }
+.phase-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.phase-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+}
+.mvp-phase-body { padding: 20px; }
+.page-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.page-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-item .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── INLINE HELPERS ─── */
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.section-desc {
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  max-width: 640px;
+}
+.h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 20px 0 8px;
+}
+.note {
+  background: rgba(124,106,255,0.08);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  color: var(--text2);
+  margin: 12px 0;
+}
+.note.amber {
+  background: rgba(245,166,35,0.08);
+  border-left-color: var(--amber);
+}
+.note.green {
+  background: rgba(62,207,142,0.08);
+  border-left-color: var(--green);
+}
+.note.red {
+  background: rgba(255,95,95,0.08);
+  border-left-color: var(--red);
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 12px 0;
+}
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ─── EMAIL GRID ─── */
+.email-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0;
+}
+.email-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+}
+.email-addr {
+  padding: 6px 12px;
+  color: var(--teal);
+  min-width: 220px;
+  border-right: 1px solid var(--border);
+}
+.email-use {
+  padding: 6px 12px;
+  color: var(--text2);
+}
+
+/* ─── CHECKLIST ─── */
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+}
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.check-icon {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 10px;
+  transition: all 0.15s;
+}
+.check-item.checked .check-icon {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.check-item.checked .check-text { text-decoration: line-through; opacity: 0.5; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ─── SIDEBAR ─── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="wordmark">dew.codes</div>
+    <div class="tagline">master architecture ref</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="show('overview', this)">
+      <span class="nav-dot" style="background:#7c6aff"></span> Overview
+    </div>
+    <div class="nav-item" onclick="show('tree', this)">
+      <span class="nav-dot" style="background:#2dd4bf"></span> Full Architecture Tree
+    </div>
+
+    <div class="nav-section">Implementation</div>
+    <div class="nav-item" onclick="show('nextjs', this)">
+      <span class="nav-dot" style="background:#4a9eff"></span> Next.js App Router
+    </div>
+    <div class="nav-item" onclick="show('content-model', this)">
+      <span class="nav-dot" style="background:#7c6aff"></span> Content Model
+    </div>
+    <div class="nav-item" onclick="show('apis', this)">
+      <span class="nav-dot" style="background:#3ecf8e"></span> APIs & Data
+    </div>
+    <div class="nav-item" onclick="show('seo', this)">
+      <span class="nav-dot" style="background:#f5a623"></span> SEO Strategy
+    </div>
+    <div class="nav-item" onclick="show('emails', this)">
+      <span class="nav-dot" style="background:#ff6ec7"></span> Email Aliases
+    </div>
+    <div class="nav-item" onclick="show('monetise', this)">
+      <span class="nav-dot" style="background:#f5a623"></span> Monetisation
+    </div>
+    <div class="nav-item" onclick="show('sharing', this)">
+      <span class="nav-dot" style="background:#ff6ec7"></span> Viral & Sharing
+    </div>
+    <div class="nav-item" onclick="show('legal', this)">
+      <span class="nav-dot" style="background:#ff5f5f"></span> Legal & Trust
+    </div>
+
+    <div class="nav-section">Build Plan</div>
+    <div class="nav-item" onclick="show('mvp', this)">
+      <span class="nav-dot" style="background:#f5a623"></span> MVP — Phase 1
+    </div>
+    <div class="nav-item" onclick="show('phase2', this)">
+      <span class="nav-dot" style="background:#3ecf8e"></span> Phase 2 Expansion
+    </div>
+    <div class="nav-item" onclick="show('phase3', this)">
+      <span class="nav-dot" style="background:#7c6aff"></span> Phase 3 Full Vision
+    </div>
+    <div class="nav-item" onclick="show('flywheel', this)">
+      <span class="nav-dot" style="background:#2dd4bf"></span> Content Flywheel
+    </div>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">dew.codes — Master Architecture Reference</div>
+    <div class="topbar-pills">
+      <div class="pill active" onclick="filterTree('all', this)">All</div>
+      <div class="pill" onclick="filterTree('suggestion', this)">💡 Suggestions</div>
+      <div class="pill" onclick="filterTree('seo', this)">🔍 SEO</div>
+      <div class="pill" onclick="filterTree('api', this)">⚡ APIs</div>
+      <div class="pill" onclick="filterTree('mvp', this)">🚀 MVP</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════════════════════════════════ OVERVIEW -->
+    <div class="section visible" id="section-overview">
+      <div class="section-label">Core Identity</div>
+      <h1 class="section-title">dew.codes — <span style="color:var(--accent2);font-style:italic">Kevin's Public Internet OS</span></h1>
+      <p class="section-desc">Not a portfolio. Not a blog. A network of useful mini-products under a personal brand. Each pillar is a standalone mini-website. Together they form something no one can easily replicate.</p>
+
+      <div class="hero" style="margin-bottom:24px">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);margin-bottom:8px">TAGLINE</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-bottom:16px">"Useful tools and field notes from a Singapore builder."</div>
+        <p style="color:var(--text2);font-size:13px">Specific, humble, expandable. Every section of the site can stand alone — someone visiting <code style="color:var(--teal)">/finance</code> sees a finance research hub. Someone visiting <code style="color:var(--teal)">/entertainment/anime</code> sees an anime tracker. The unifying thread is only visible if they poke around.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔨 Build</div>
+            <div class="card-badge" style="background:rgba(124,106,255,0.15);color:var(--build)">/projects · /lab · /writing</div>
+          </div>
+          <div class="card-desc">Software projects, dev logs, product experiments, open source. Case studies not just project cards.</div>
+          <div class="card-tags"><span class="tag">liveling</span><span class="tag">diabetes-connect</span><span class="tag">nuschedule</span><span class="tag">lab</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📈 Track</div>
+            <div class="card-badge" style="background:rgba(62,207,142,0.15);color:var(--track)">/finance</div>
+          </div>
+          <div class="card-desc">Markets, dashboards, quant tools, sector research. Interactive toys, not dense theory.</div>
+          <div class="card-tags"><span class="tag">uranium</span><span class="tag">reits</span><span class="tag">dca</span><span class="tag">backtester</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🌏 Explore</div>
+            <div class="card-badge" style="background:rgba(74,158,255,0.15);color:var(--explore)">/travel · /singapore</div>
+          </div>
+          <div class="card-desc">Country guides, diving logbook, field guides, ecology. Practical not pretty.</div>
+          <div class="card-tags"><span class="tag">japan</span><span class="tag">diving</span><span class="tag">field-guide</span><span class="tag">nus</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🎵 Curate</div>
+            <div class="card-badge" style="background:rgba(255,110,199,0.15);color:var(--curate)">/entertainment</div>
+          </div>
+          <div class="card-desc">Music, anime, guitar, J-pop, Mandopop. Interactive and playable, not just lists.</div>
+          <div class="card-tags"><span class="tag">jpop</span><span class="tag">guitar</span><span class="tag">anime</span><span class="tag">tier-list</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🛠 Tools</div>
+            <div class="card-badge" style="background:rgba(62,207,142,0.15);color:var(--green)">/tools (top-level)</div>
+          </div>
+          <div class="card-desc">The utility engine. Highest traction section. Tools earn backlinks. Blogs don't.</div>
+          <div class="card-tags"><span class="tag">cap-planner</span><span class="tag">anime-picker</span><span class="tag">trip-budget</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💛 Support</div>
+            <div class="card-badge" style="background:rgba(245,166,35,0.15);color:var(--support)">/support · /community</div>
+          </div>
+          <div class="card-desc">Transparent costs, tasteful tiers, guestbook, contributor wall.</div>
+          <div class="card-tags"><span class="tag">donate</span><span class="tag">wall</span><span class="tag">newsletter</span></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>The key principle:</strong> Each vertical (<code>/finance</code>, <code>/entertainment/anime</code>, <code>/travel</code>, <code>/singapore</code>) should have its own nav, own hero, own tools, own personality. A stranger who lands on <code>/finance</code> thinks "this is a finance research site by a Singapore student." Only when they notice the global nav do they realise there's a whole world.
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ TREE -->
+    <div class="section" id="section-tree">
+      <div class="section-label">Architecture</div>
+      <div class="section-title">Full Site Tree — Annotated</div>
+      <p class="section-desc">Every branch annotated with 💡 suggestions, 🔍 SEO notes, and ⚡ API/tech notes. MVP-priority routes marked with 🚀.</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+        <span style="font-size:12px;color:rgba(245,166,35,0.8);font-family:'DM Mono',monospace">💡 suggestion</span>
+        <span style="font-size:12px;color:rgba(62,207,142,0.8);font-family:'DM Mono',monospace">🔍 seo note</span>
+        <span style="font-size:12px;color:rgba(74,158,255,0.8);font-family:'DM Mono',monospace">⚡ api/tech note</span>
+        <span style="font-size:12px;color:rgba(245,166,35,0.9);font-family:'DM Mono',monospace">🚀 mvp priority</span>
+        <span style="font-size:12px;color:rgba(255,95,95,0.7);font-family:'DM Mono',monospace">⚠ caution</span>
+      </div>
+
+      <div class="tree-container">
+        <div class="tree-header">
+          <div class="tree-header-title">dew.codes — master sitemap</div>
+          <div style="font-size:11px;color:var(--text3)">fully annotated</div>
+        </div>
+        <div class="tree-body" id="tree-body">
+<span class="tree-path">/</span>  <span class="comment suggestion">💡 command-center homepage — GitHub heatmap + live widgets + featured tools 🚀</span>
+<span class="tree-path">├── about/</span>              <span class="comment seo">🔍 Person schema, use keywords "Singapore developer NUS"</span>
+<span class="tree-path">│   ├── now</span>            <span class="comment suggestion">💡 "Currently building / tracking / watching / listening" — update weekly 🚀</span>
+<span class="tree-path">│   ├── timeline</span>       <span class="comment suggestion">💡 Interactive career/education timeline — visual, scannable</span>
+<span class="tree-path">│   ├── uses</span>           <span class="comment seo">🔍 "/uses" pages rank well — list your hardware, apps, services</span>
+<span class="tree-path">│   ├── stack</span>          <span class="comment api">⚡ Pull live GitHub stats via GitHub REST API v4 (no key needed for public repos)</span>
+<span class="tree-path">│   ├── values</span>
+<span class="tree-path">│   └── contact</span>        <span class="comment suggestion">💡 Routing cards per use-case: collab / bug / correction / anime rec 🚀</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── projects/</span>           <span class="comment seo">🔍 Each project = SoftwareApplication or CreativeWork schema. Include demo + screenshots.</span>
+<span class="tree-path">│   ├── liveling/</span>       <span class="comment suggestion">💡 Flagship — treat as a live product page, not just a case study 🚀</span>
+<span class="tree-path">│   │   ├── overview</span>
+<span class="tree-path">│   │   ├── demo</span>        <span class="comment suggestion">💡 Embed live focus timer + pixel RPG avatar preview</span>
+<span class="tree-path">│   │   ├── devlog</span>      <span class="comment suggestion">💡 "Build in public" — weekly updates. Cross-post to /writing/devlogs</span>
+<span class="tree-path">│   │   ├── rpg-system</span>  <span class="comment suggestion">💡 Explain the XP/levelling system interactively</span>
+<span class="tree-path">│   │   ├── roadmap</span>     <span class="comment suggestion">💡 Public roadmap + user feature voting widget</span>
+<span class="tree-path">│   │   └── changelog</span>   <span class="comment api">⚡ Auto-generate from GitHub releases via GH API</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── diabetes-connect/</span>
+<span class="tree-path">│   │   ├── overview</span>
+<span class="tree-path">│   │   ├── problem</span>     <span class="comment seo">🔍 "Diabetes management app Singapore" — real health search intent</span>
+<span class="tree-path">│   │   ├── ux-research</span> <span class="comment suggestion">💡 Publish anonymised interview insights — strong portfolio signal</span>
+<span class="tree-path">│   │   ├── screenshots</span>
+<span class="tree-path">│   │   └── learnings</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── nuschedule/</span>     <span class="comment seo">🔍 "NUS module planner" — direct Singapore student search demand 🚀</span>
+<span class="tree-path">│   │   ├── overview</span>
+<span class="tree-path">│   │   ├── demo</span>
+<span class="tree-path">│   │   ├── module-planner</span> <span class="comment api">⚡ NUSMods API (public) for module data, schedule conflicts</span>
+<span class="tree-path">│   │   ├── architecture</span>
+<span class="tree-path">│   │   └── changelog</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── experiments/</span>
+<span class="tree-path">│   │   ├── tiny-tools</span>
+<span class="tree-path">│   │   ├── abandoned-projects</span> <span class="comment suggestion">💡 "What failed + what I learned" — great personal branding</span>
+<span class="tree-path">│   │   ├── weekend-builds</span>
+<span class="tree-path">│   │   └── ai-experiments</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   └── open-source/</span>
+<span class="tree-path">│       ├── contributions</span> <span class="comment api">⚡ GitHub GraphQL API — pull contribution graph, PRs, repos</span>
+<span class="tree-path">│       ├── github-dashboard</span>
+<span class="tree-path">│       └── issue-board</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── writing/</span>            <span class="comment seo">🔍 Article/BlogPosting schema. Allow multi-tag — one post lives in travel + dev + japan</span>
+<span class="tree-path">│   ├── blog</span>
+<span class="tree-path">│   ├── essays</span>
+<span class="tree-path">│   ├── notes</span>           <span class="comment suggestion">💡 Short-form "digital garden" style — low-pressure publishing</span>
+<span class="tree-path">│   ├── book-notes</span>
+<span class="tree-path">│   ├── learning-logs</span>
+<span class="tree-path">│   ├── devlogs</span>         <span class="comment suggestion">💡 Cross-posts from /projects/liveling/devlog etc.</span>
+<span class="tree-path">│   ├── market-notes</span>    <span class="comment suggestion">💡 Cross-posts from /finance/notes</span>
+<span class="tree-path">│   ├── travelogues</span>     <span class="comment suggestion">💡 Cross-posts from /travel/countries/[x]/blog</span>
+<span class="tree-path">│   └── newsletter</span>      <span class="comment suggestion">💡 "Dew Dispatch" — 1 build note, 1 market chart, 1 travel note, 1 music/anime pick, 1 link 🚀</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── travel/</span>             <span class="comment suggestion">💡 Standalone hub — own hero, own palette. Feels like a travel blog, not Kevin's portfolio.</span>
+<span class="tree-path">│   ├── map</span>             <span class="comment suggestion">💡 3D globe cool but traffic comes from practical pages. Do both.</span>
+<span class="tree-path">│   │</span>                   <span class="comment api">⚡ react-globe.gl or Mapbox GL JS for interactive globe</span>
+<span class="tree-path">│   ├── countries/</span>
+<span class="tree-path">│   │   ├── japan/</span>      <span class="comment seo">🔍 "Japan travel guide Singapore" + "Japan first timer" — high traffic 🚀</span>
+<span class="tree-path">│   │   │   ├── overview</span>    <span class="comment suggestion">💡 "Would I Go Again?" score card — Food/Cost/Transport/Safety/Solo-friendly</span>
+<span class="tree-path">│   │   │   ├── itinerary</span>   <span class="comment seo">🔍 HowTo schema for "7-day Japan itinerary"</span>
+<span class="tree-path">│   │   │   ├── blog</span>
+<span class="tree-path">│   │   │   ├── tips</span>        <span class="comment seo">🔍 FAQPage schema — "What to know before going to Japan"</span>
+<span class="tree-path">│   │   │   ├── food</span>        <span class="comment suggestion">💡 Embed Google Maps food spots</span>
+<span class="tree-path">│   │   │   ├── budget</span>      <span class="comment seo">🔍 "Japan trip cost Singapore student" — real search query</span>
+<span class="tree-path">│   │   │   ├── gallery</span>
+<span class="tree-path">│   │   │   ├── mistakes</span>    <span class="comment suggestion">💡 "Things I'd skip / wish I knew" — highly shareable</span>
+<span class="tree-path">│   │   │   ├── transport</span>   <span class="comment suggestion">💡 JR Pass calculator + IC card explainer</span>
+<span class="tree-path">│   │   │   ├── flora-and-fauna</span> <span class="comment suggestion">💡 Links to /travel/field-guide — unique cross-linking</span>
+<span class="tree-path">│   │   │   └── packing-list</span>
+<span class="tree-path">│   │   ├── italy/</span>      <span class="comment suggestion">💡 Same repeatable template as japan/</span>
+<span class="tree-path">│   │   └── china/</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── tools/</span>          <span class="comment suggestion">💡 The real traffic driver in /travel 🚀</span>
+<span class="tree-path">│   │   ├── trip-cost-calculator</span>   <span class="comment seo">🔍 "Japan trip budget calculator Singapore" 🚀</span>
+<span class="tree-path">│   │   ├── packing-list-generator</span> <span class="comment suggestion">💡 Inputs: destination + season + activities → customised list</span>
+<span class="tree-path">│   │   ├── exchange-rate-cheatsheet</span> <span class="comment api">⚡ ExchangeRate-API (free tier) or frankfurter.app (free, no key)</span>
+<span class="tree-path">│   │   ├── jetlag-planner</span>
+<span class="tree-path">│   │   └── itinerary-builder</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── diving/</span>         <span class="comment suggestion">💡 Niche + educational. Mixes travel, science, personal progress. Very unique. 🚀</span>
+<span class="tree-path">│   │   ├── overview</span>
+<span class="tree-path">│   │   ├── logbook</span>     <span class="comment suggestion">💡 Personal dive log — date, site, depth, visibility, marine life seen</span>
+<span class="tree-path">│   │   ├── dive-sites</span>  <span class="comment seo">🔍 "Best dive sites [region]" — strong niche SEO</span>
+<span class="tree-path">│   │   ├── marine-life</span> <span class="comment suggestion">💡 Species cards: photo + common name + depth + behaviour + conservation</span>
+<span class="tree-path">│   │   ├── physics</span>     <span class="comment suggestion">💡 Interactive depth chart: pressure / light loss / air consumption at each depth</span>
+<span class="tree-path">│   │   ├── certification-progress</span>
+<span class="tree-path">│   │   ├── safety-notes</span>
+<span class="tree-path">│   │   └── gear</span>        <span class="comment seo">🔍 Affiliate opportunity for dive gear</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   └── field-guide/</span>    <span class="comment suggestion">💡 Genuinely rare content — personal species notes from your trips 🚀</span>
+<span class="tree-path">│       ├── plants</span>
+<span class="tree-path">│       ├── animals</span>
+<span class="tree-path">│       ├── birds</span>
+<span class="tree-path">│       ├── marine-life</span> <span class="comment api">⚡ iNaturalist API for species data + range maps (free, open)</span>
+<span class="tree-path">│       └── identification-notes</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── finance/</span>            <span class="comment suggestion">💡 Standalone hub — own identity. Feels like a finance research site.</span>
+<span class="tree-path">│   │</span>                   <span class="comment warn">⚠ EVERY page: "Personal research only. Not financial advice."</span>
+<span class="tree-path">│   ├── market-outlook/</span>
+<span class="tree-path">│   │   ├── weekly</span>      <span class="comment suggestion">💡 Weekly note: 1 chart + 1 observation + 1 question. Low effort, high trust.</span>
+<span class="tree-path">│   │   ├── monthly</span>
+<span class="tree-path">│   │   ├── energy</span>
+<span class="tree-path">│   │   ├── uranium</span>     <span class="comment seo">🔍 "Uranium market outlook" — niche, less competition, your actual interest</span>
+<span class="tree-path">│   │   ├── base-metals</span>
+<span class="tree-path">│   │   ├── rates</span>
+<span class="tree-path">│   │   ├── singapore</span>  <span class="comment seo">🔍 "Singapore REITs watchlist" — local SEO advantage</span>
+<span class="tree-path">│   │   └── watchlist</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── dashboards/</span>     <span class="comment api">⚡ Data sources: Alpha Vantage (free), Yahoo Finance (unofficial), FRED API (free), SGX API</span>
+<span class="tree-path">│   │   ├── macro-dashboard</span>
+<span class="tree-path">│   │   ├── commodity-dashboard</span>
+<span class="tree-path">│   │   ├── equity-watchlist</span>
+<span class="tree-path">│   │   ├── dividend-tracker</span>
+<span class="tree-path">│   │   └── portfolio-simulator</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── quant-tools/</span>    <span class="comment suggestion">💡 Hook: "Quant concepts explained through interactive toys" 🚀</span>
+<span class="tree-path">│   │   ├── backtester</span>
+<span class="tree-path">│   │   ├── factor-screener</span>
+<span class="tree-path">│   │   ├── dca-calculator</span>  <span class="comment seo">🔍 "DCA calculator Singapore" — direct search demand 🚀</span>
+<span class="tree-path">│   │   ├── risk-reward-calculator</span>
+<span class="tree-path">│   │   ├── correlation-matrix</span>
+<span class="tree-path">│   │   ├── volatility-lab</span>
+<span class="tree-path">│   │   ├── drawdown-visualizer</span>
+<span class="tree-path">│   │   ├── monte-carlo-simulator</span>
+<span class="tree-path">│   │   └── position-sizing-calculator</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── sectors/</span>
+<span class="tree-path">│   │   ├── energy</span>
+<span class="tree-path">│   │   ├── uranium</span>
+<span class="tree-path">│   │   ├── base-metals</span>
+<span class="tree-path">│   │   ├── semiconductors</span>
+<span class="tree-path">│   │   ├── infrastructure</span>
+<span class="tree-path">│   │   └── singapore</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── explainers/</span>     <span class="comment suggestion">💡 Evergreen — "What is a REIT?", "How does DCA work?" etc.</span>
+<span class="tree-path">│   │   ├── economics</span>
+<span class="tree-path">│   │   ├── business-analytics</span>
+<span class="tree-path">│   │   ├── commodities</span>
+<span class="tree-path">│   │   ├── valuation</span>
+<span class="tree-path">│   │   └── risk</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── notes/</span>
+<span class="tree-path">│   │   ├── weekly-market-notes</span>
+<span class="tree-path">│   │   ├── earnings-notes</span>
+<span class="tree-path">│   │   ├── macro-notes</span>
+<span class="tree-path">│   │   └── reading-list</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── glossary</span>        <span class="comment seo">🔍 Each term = its own page. "What is uranium enrichment" etc. Evergreen, long-tail.</span>
+<span class="tree-path">│   └── disclosures</span>    <span class="comment warn">⚠ Required. "Not financial advice." Prominently displayed.</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── entertainment/</span>      <span class="comment suggestion">💡 Split feel: music hub + anime hub. Each standalone.</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── music/</span>          <span class="comment suggestion">💡 Feels like a music blog. Own hero, own palette.</span>
+<span class="tree-path">│   │   ├── dashboard</span>   <span class="comment api">⚡ Spotify API (Now Playing + top tracks) — requires OAuth</span>
+<span class="tree-path">│   │   ├── news</span>
+<span class="tree-path">│   │   ├── jpop/</span>
+<span class="tree-path">│   │   │   ├── artist-index</span>
+<span class="tree-path">│   │   │   ├── new-releases</span>  <span class="comment api">⚡ Spotify API new releases by artist + MusicBrainz API (free)</span>
+<span class="tree-path">│   │   │   ├── beginner-guide</span> <span class="comment seo">🔍 "J-pop beginner guide" — strong search volume</span>
+<span class="tree-path">│   │   │   ├── starter-pack</span>   <span class="comment suggestion">💡 Very shareable. "Start here if you know nothing about J-pop" 🚀</span>
+<span class="tree-path">│   │   │   ├── playlists</span>
+<span class="tree-path">│   │   │   ├── song-rankings</span>
+<span class="tree-path">│   │   │   └── concert-tracker</span>
+<span class="tree-path">│   │   │</span>
+<span class="tree-path">│   │   ├── mandopop/</span>   <span class="comment seo">🔍 "Mandopop beginner guide" — far less competition than J-pop content</span>
+<span class="tree-path">│   │   │   └── (same structure as jpop)</span>
+<span class="tree-path">│   │   │</span>
+<span class="tree-path">│   │   ├── guitar/</span>
+<span class="tree-path">│   │   │   ├── chord-library</span>   <span class="comment suggestion">💡 Interactive SVG fretboard — very shareable</span>
+<span class="tree-path">│   │   │   ├── strumming-patterns</span> <span class="comment suggestion">💡 Animated strumming pattern player</span>
+<span class="tree-path">│   │   │   ├── songbook</span>       <span class="comment seo">🔍 "Mandopop guitar chords" — specific, low competition</span>
+<span class="tree-path">│   │   │   ├── telecaster-tones</span>
+<span class="tree-path">│   │   │   ├── acoustic-arrangements</span>
+<span class="tree-path">│   │   │   ├── practice-log</span>   <span class="comment suggestion">💡 Streak tracker — shareable "14-day guitar streak" card</span>
+<span class="tree-path">│   │   │   └── beginner-path</span>
+<span class="tree-path">│   │   │</span>
+<span class="tree-path">│   │   ├── playlists</span>
+<span class="tree-path">│   │   ├── artist-guides</span>
+<span class="tree-path">│   │   ├── song-breakdowns</span>
+<span class="tree-path">│   │   └── release-calendar</span>   <span class="comment api">⚡ Spotify new releases + RSS feeds from label sites</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── anime/</span>          <span class="comment suggestion">💡 Feels like a dedicated anime site. Own identity.</span>
+<span class="tree-path">│   │   ├── dashboard</span>   <span class="comment api">⚡ AniList GraphQL API — watching list, scores, stats. Free, no key needed.</span>
+<span class="tree-path">│   │   ├── news</span>        <span class="comment api">⚡ Jikan REST API v4 (unofficial MyAnimeList) — anime news, seasonal data. Free.</span>
+<span class="tree-path">│   │   ├── seasonal</span>    <span class="comment api">⚡ Jikan /seasons/now endpoint — current season anime. Cache at build time.</span>
+<span class="tree-path">│   │   ├── reviews</span>     <span class="comment seo">🔍 Review schema. "[Anime title] review" gets real search traffic.</span>
+<span class="tree-path">│   │   ├── tier-list</span>   <span class="comment suggestion">💡 Interactive drag-and-drop tier list maker — very shareable</span>
+<span class="tree-path">│   │   ├── recommendations</span>
+<span class="tree-path">│   │   ├── studio-tracker</span>   <span class="comment api">⚡ AniList GraphQL for studio → anime relationships</span>
+<span class="tree-path">│   │   ├── watch-order-guides</span> <span class="comment seo">🔍 "[Series] watch order" — consistent search demand</span>
+<span class="tree-path">│   │   ├── character-index</span>
+<span class="tree-path">│   │   └── opening-ending-rankings</span> <span class="comment suggestion">💡 Unique content type — very anime-community specific and shareable</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   └── games/</span>
+<span class="tree-path">│       ├── backlog</span>
+<span class="tree-path">│       ├── reviews</span>
+<span class="tree-path">│       ├── tier-list</span>
+<span class="tree-path">│       └── cozy-games</span>  <span class="comment seo">🔍 "Cozy games list" — trending niche, low competition</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── tools/</span>              <span class="comment suggestion">💡 TOP-LEVEL. The utility engine. Highest traction section of the entire site. 🚀</span>
+<span class="tree-path">│   │</span>                   <span class="comment seo">🔍 Each tool = WebApplication schema. Title: "[Tool Name] — Free Online Tool"</span>
+<span class="tree-path">│   ├── calculators/</span>
+<span class="tree-path">│   │   ├── gpa-calculator</span>        <span class="comment seo">🔍 "NUS GPA calculator" — Singapore student searches 🚀</span>
+<span class="tree-path">│   │   ├── cap-planner</span>           <span class="comment seo">🔍 "NUS CAP planner" — direct search intent 🚀</span>
+<span class="tree-path">│   │   ├── module-workload-estimator</span> <span class="comment api">⚡ NUSMods API for MC counts and workload ratings</span>
+<span class="tree-path">│   │   ├── dca-calculator</span>        <span class="comment seo">🔍 "Dollar cost averaging calculator" 🚀</span>
+<span class="tree-path">│   │   ├── dividend-calculator</span>
+<span class="tree-path">│   │   ├── risk-reward-calculator</span>
+<span class="tree-path">│   │   ├── trip-budget-calculator</span> <span class="comment seo">🔍 "Japan trip budget calculator" etc. 🚀</span>
+<span class="tree-path">│   │   ├── music-practice-timer</span>
+<span class="tree-path">│   │   └── habit-streak-calculator</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── generators/</span>
+<span class="tree-path">│   │   ├── itinerary-generator</span>   <span class="comment seo">🔍 "Japan itinerary generator" — good long-tail</span>
+<span class="tree-path">│   │   ├── anime-picker</span>          <span class="comment suggestion">💡 Inputs: mood + genre + length → top 3 picks. Use AniList API. 🚀</span>
+<span class="tree-path">│   │   ├── anime-watch-order-generator</span> <span class="comment api">⚡ Jikan API + your own curated watch-order data</span>
+<span class="tree-path">│   │   ├── playlist-generator</span>   <span class="comment api">⚡ Spotify API (requires OAuth + PKCE for client-side)</span>
+<span class="tree-path">│   │   ├── packing-list-generator</span>
+<span class="tree-path">│   │   └── project-idea-generator</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   └── visualizers/</span>
+<span class="tree-path">│       ├── contribution-heatmap</span>  <span class="comment api">⚡ GitHub GraphQL API — contributionsCollection query</span>
+<span class="tree-path">│       ├── market-heatmap</span>
+<span class="tree-path">│       ├── travel-map</span>
+<span class="tree-path">│       ├── anime-season-board</span>
+<span class="tree-path">│       └── learning-roadmap</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── singapore/</span>          <span class="comment suggestion">💡 Standalone hub — local SEO advantage. Feels like a Singapore student resource site.</span>
+<span class="tree-path">│   │</span>                   <span class="comment seo">🔍 Use "Singapore", "NUS", "NTU", "student" throughout for local SEO</span>
+<span class="tree-path">│   ├── student-tools/</span>
+<span class="tree-path">│   │   ├── nus-module-planner</span>  <span class="comment seo">🔍 "NUS module planner 2026" 🚀</span>
+<span class="tree-path">│   │   ├── study-spot-map</span>      <span class="comment suggestion">💡 Map of study spots: library / cafe / 24hr. Very shareable among NUS students.</span>
+<span class="tree-path">│   │   ├── internship-tracker</span>
+<span class="tree-path">│   │   └── scholarship-deadlines</span> <span class="comment seo">🔍 "NUS scholarship deadlines" — very specific, real intent</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   ├── guides/</span>
+<span class="tree-path">│   │   ├── tech-events</span>   <span class="comment suggestion">💡 Curated SG tech events calendar — genuinely useful</span>
+<span class="tree-path">│   │   ├── cafe-workspots</span> <span class="comment seo">🔍 "Best cafes to work in Singapore" — evergreen local search</span>
+<span class="tree-path">│   │   ├── budget-food</span>   <span class="comment seo">🔍 "Cheap food near NUS" etc.</span>
+<span class="tree-path">│   │   └── weekend-ideas</span>
+<span class="tree-path">│   │</span>
+<span class="tree-path">│   └── christian/</span>       <span class="comment suggestion">💡 Niche but authentic. "Faith + tech" is an underserved space.</span>
+<span class="tree-path">│       ├── app-devlog</span>
+<span class="tree-path">│       ├── prayer-tech</span>
+<span class="tree-path">│       ├── church-tools</span>
+<span class="tree-path">│       └── faith-and-productivity</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── collections/</span>        <span class="comment suggestion">💡 Underrated content type — curated bundles of your own pages 🚀</span>
+<span class="tree-path">│   ├── japan-first-trip-kit</span>   <span class="comment suggestion">💡 Bundles: itinerary + budget calc + packing list + transport guide</span>
+<span class="tree-path">│   ├── singapore-student-pack</span> <span class="comment suggestion">💡 Bundles: CAP planner + study spots + budget food + internship tracker</span>
+<span class="tree-path">│   ├── anime-beginner-pack</span>
+<span class="tree-path">│   ├── mandopop-guitar-pack</span>
+<span class="tree-path">│   ├── finance-beginner-pack</span>
+<span class="tree-path">│   └── kevin-toolbox</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── community/</span>          <span class="comment suggestion">💡 Light community — no full social network. Guestbook surprisingly charming.</span>
+<span class="tree-path">│   ├── guestbook</span>
+<span class="tree-path">│   ├── polls</span>
+<span class="tree-path">│   ├── suggestions</span>
+<span class="tree-path">│   └── ask</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── lab/</span>                <span class="comment suggestion">💡 Sandbox. Incomplete is allowed here. Protects main portfolio quality.</span>
+<span class="tree-path">│   ├── ai</span>
+<span class="tree-path">│   ├── data</span>
+<span class="tree-path">│   ├── scraping-notes</span>
+<span class="tree-path">│   ├── api-experiments</span>
+<span class="tree-path">│   ├── ui-experiments</span>
+<span class="tree-path">│   ├── tiny-builds</span>
+<span class="tree-path">│   └── failed-experiments</span>  <span class="comment suggestion">💡 Each entry: what tried / why / what failed / what learned / retry?</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── support/</span>
+<span class="tree-path">│   ├── donate</span>          <span class="comment suggestion">💡 Show actual monthly costs: server / API / domain. Makes support feel real.</span>
+<span class="tree-path">│   ├── wall</span>            <span class="comment suggestion">💡 Supporter names displayed publicly</span>
+<span class="tree-path">│   ├── tiers</span>           <span class="comment suggestion">💡 $3 coffee / $7 server / $12 guitar strings / $25 API bills / $50 sponsor</span>
+<span class="tree-path">│   ├── wishlist</span>
+<span class="tree-path">│   └── transparency</span>   <span class="comment suggestion">💡 Monthly breakdown of costs + traffic + what you're working on</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── legal/</span>
+<span class="tree-path">│   ├── privacy</span>
+<span class="tree-path">│   ├── terms</span>
+<span class="tree-path">│   ├── cookie-policy</span>
+<span class="tree-path">│   ├── affiliate-disclosure</span>
+<span class="tree-path">│   ├── financial-disclaimer</span>  <span class="comment warn">⚠ Required before any finance content goes live</span>
+<span class="tree-path">│   ├── ai-disclosure</span>
+<span class="tree-path">│   ├── data-sources</span>   <span class="comment suggestion">💡 Per-source: what collected, how often updated, limitations, attribution</span>
+<span class="tree-path">│   ├── attribution</span>
+<span class="tree-path">│   └── corrections</span>   <span class="comment suggestion">💡 corrections@dew.codes — makes you look serious and credible</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── newsletter/</span>
+<span class="tree-path">│   ├── subscribe</span>      <span class="comment suggestion">💡 "Dew Dispatch" — 1 build + 1 chart + 1 travel + 1 music/anime + 1 link 🚀</span>
+<span class="tree-path">│   └── archive/</span>
+<span class="tree-path">│       └── [issue-slug]</span>
+<span class="tree-path">│</span>
+<span class="tree-path">├── search</span>             <span class="comment suggestion">💡 Add early. Cmd+K palette. Filters: type / topic / date. 🚀</span>
+<span class="tree-path">├── tags/[tag]</span>         <span class="comment seo">🔍 Auto-generated tag pages from content model. Helps internal linking.</span>
+<span class="tree-path">├── data-sources</span>       <span class="comment suggestion">💡 Transparency page — all APIs used, update frequency, limitations</span>
+<span class="tree-path">│</span>
+<span class="tree-path">└── api/</span>                <span class="comment api">⚡ Internal Next.js API routes — power your own dashboards</span>
+<span class="tree-path">    ├── health</span>
+<span class="tree-path">    ├── github</span>
+<span class="tree-path">    ├── finance</span>
+<span class="tree-path">    ├── anime</span>          <span class="comment api">⚡ Proxy Jikan/AniList calls server-side to avoid CORS + cache responses</span>
+<span class="tree-path">    ├── music</span>          <span class="comment api">⚡ Proxy Spotify API calls — keep client_secret server-side only</span>
+<span class="tree-path">    ├── travel</span>
+<span class="tree-path">    └── sitemap</span>        <span class="comment api">⚡ Dynamic sitemap.ts in App Router — auto-includes all content routes</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ NEXTJS -->
+    <div class="section" id="section-nextjs">
+      <div class="section-label">Implementation</div>
+      <div class="section-title">Next.js App Router — What You Must Know</div>
+      <p class="section-desc">Everything specific to building dew.codes on Next.js 14+ App Router. Non-negotiable setup items first, then enhancements.</p>
+
+      <div class="impl-block open">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">1</div>
+          <div class="impl-title">App Router folder structure for this architecture</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Your routes map directly to folders in <code style="color:var(--teal)">app/</code>. Each section gets its own <code style="color:var(--teal)">layout.tsx</code> for the standalone mini-site feel.</p>
+          <div class="code-block">
+<span class="code-comment">// app/ directory structure</span>
+app/
+├── layout.tsx              <span class="code-comment">// global: fonts, analytics, cmd+K</span>
+├── page.tsx                <span class="code-comment">// homepage command center</span>
+│
+├── (about)/
+│   └── about/
+│       ├── layout.tsx      <span class="code-comment">// about-specific nav/wrapper</span>
+│       ├── now/page.tsx
+│       └── stack/page.tsx
+│
+├── (finance)/
+│   └── finance/
+│       ├── layout.tsx      <span class="code-comment">// finance mini-site layout — own header, disclaimer banner</span>
+│       ├── page.tsx
+│       └── quant-tools/
+│           └── [slug]/page.tsx
+│
+├── (travel)/
+│   └── travel/
+│       ├── layout.tsx      <span class="code-comment">// travel mini-site layout — own header, travel palette</span>
+│       └── countries/
+│           └── [country]/
+│               ├── layout.tsx <span class="code-comment">// country-specific layout</span>
+│               └── [section]/page.tsx
+│
+├── tools/
+│   └── [slug]/
+│       ├── page.tsx
+│       └── opengraph-image.tsx <span class="code-comment">// per-tool OG image</span>
+│
+├── sitemap.ts              <span class="code-comment">// auto-generated, include all content</span>
+├── robots.ts
+└── not-found.tsx
+          </div>
+          <div class="note green">Use <strong>route groups</strong> <code>(finance)</code>, <code>(travel)</code>, <code>(entertainment)</code> to scope layouts without affecting the URL. Each vertical gets its own <code>layout.tsx</code> with its own nav, palette, and header — this is what makes each section feel like a standalone site.</div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">2</div>
+          <div class="impl-title">Metadata — generateMetadata() and static exports</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="code-block">
+<span class="code-comment">// app/tools/[slug]/page.tsx</span>
+<span class="code-type">export async function</span> <span class="code-key">generateMetadata</span>({ params }) {
+  <span class="code-type">const</span> tool = <span class="code-type">await</span> getToolBySlug(params.slug)
+  <span class="code-type">return</span> {
+    title: <span class="code-str">`${tool.title} — dew.codes`</span>,
+    description: tool.description,
+    keywords: tool.tags,
+    openGraph: {
+      title: tool.title,
+      description: tool.description,
+      images: [<span class="code-str">`/tools/${params.slug}/opengraph-image`</span>],
+      type: <span class="code-str">'website'</span>,
+    },
+    alternates: { canonical: <span class="code-str">`https://dew.codes/tools/${params.slug}`</span> }
+  }
+}
+
+<span class="code-comment">// app/sitemap.ts — dynamic sitemap covering all content</span>
+<span class="code-type">export default async function</span> <span class="code-key">sitemap</span>() {
+  <span class="code-type">const</span> tools = <span class="code-type">await</span> getAllTools()
+  <span class="code-type">const</span> posts = <span class="code-type">await</span> getAllPosts()
+  <span class="code-type">const</span> countries = <span class="code-type">await</span> getCountries()
+  <span class="code-type">return</span> [
+    ...tools.map(t => ({ url: <span class="code-str">`https://dew.codes/tools/${t.slug}`</span>, lastModified: t.dateUpdated })),
+    ...posts.map(p => ({ url: <span class="code-str">`https://dew.codes/writing/${p.slug}`</span>, lastModified: p.dateUpdated })),
+    ...countries.flatMap(c => c.sections.map(s => ({ url: <span class="code-str">`https://dew.codes/travel/${c.slug}/${s}`</span> })))
+  ]
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">3</div>
+          <div class="impl-title">Rendering strategy — when to use what</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <table class="ref-table">
+            <thead><tr><th>Page type</th><th>Strategy</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>/tools/[slug]</td><td>SSG (generateStaticParams)</td><td>Static tools, fast load, great SEO</td></tr>
+              <tr><td>/writing/[slug]</td><td>SSG + ISR (revalidate: 3600)</td><td>Content updates, still mostly static</td></tr>
+              <tr><td>/travel/countries/[x]/[section]</td><td>SSG</td><td>Near-static personal guides</td></tr>
+              <tr><td>/finance/dashboards/*</td><td>SSR or client-side</td><td>Live market data must be fresh</td></tr>
+              <tr><td>/entertainment/anime/seasonal</td><td>ISR (revalidate: 86400)</td><td>Jikan data, daily refresh is enough</td></tr>
+              <tr><td>/about/now</td><td>ISR or MDX</td><td>You update manually, low frequency</td></tr>
+              <tr><td>/finance/market-outlook/*</td><td>ISR (revalidate: 3600)</td><td>Semi-live market notes</td></tr>
+            </tbody>
+          </table>
+          <div class="note amber">Finance dashboards with live data: use Server Components that fetch at request time OR client components with SWR/React Query. Never expose API keys client-side — proxy via <code>/api/finance</code> route.</div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">4</div>
+          <div class="impl-title">JSON-LD Schema by page type</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <table class="ref-table">
+            <thead><tr><th>Route</th><th>Schema type</th></tr></thead>
+            <tbody>
+              <tr><td>/projects/[slug]</td><td>SoftwareApplication + CreativeWork</td></tr>
+              <tr><td>/writing/[slug]</td><td>Article or BlogPosting</td></tr>
+              <tr><td>/travel/[country]/itinerary</td><td>HowTo</td></tr>
+              <tr><td>/travel/[country]/tips</td><td>FAQPage</td></tr>
+              <tr><td>/tools/[slug]</td><td>WebApplication + SoftwareApplication</td></tr>
+              <tr><td>/finance/explainers/[slug]</td><td>Article</td></tr>
+              <tr><td>/finance/glossary/[term]</td><td>DefinedTermSet / Article</td></tr>
+              <tr><td>/entertainment/anime/reviews/[slug]</td><td>Review</td></tr>
+              <tr><td>/about</td><td>Person</td></tr>
+              <tr><td>/support</td><td>DonateAction + WebPage</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">5</div>
+          <div class="impl-title">OG image generation — per-page dynamic images</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="code-block">
+<span class="code-comment">// app/tools/[slug]/opengraph-image.tsx</span>
+<span class="code-type">import</span> { ImageResponse } <span class="code-type">from</span> <span class="code-str">'next/og'</span>
+
+<span class="code-type">export default async function</span> <span class="code-key">Image</span>({ params }) {
+  <span class="code-type">const</span> tool = <span class="code-type">await</span> getToolBySlug(params.slug)
+  <span class="code-type">return new</span> ImageResponse(
+    &lt;<span class="code-type">div</span> style={{ background: <span class="code-str">'#0c0c0e'</span>, display: <span class="code-str">'flex'</span>, padding: <span class="code-str">'40px'</span> }}&gt;
+      &lt;<span class="code-type">h1</span> style={{ color: <span class="code-str">'#e8e8f0'</span> }}&gt;{tool.title}&lt;/<span class="code-type">h1</span>&gt;
+      &lt;<span class="code-type">p</span> style={{ color: <span class="code-str">'#9898a8'</span> }}&gt;dew.codes&lt;/<span class="code-type">p</span>&gt;
+    &lt;/<span class="code-type">div</span>&gt;
+  )
+}
+<span class="code-comment">// Do this for: /tools, /writing, /travel/[country], /projects, /finance</span>
+<span class="code-comment">// Shareable tool results also need a /api/share-card endpoint</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">6</div>
+          <div class="impl-title">Search — Cmd+K command palette</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Add this early. It makes the site feel like a product.</p>
+          <div class="code-block">
+<span class="code-comment">// Option A: Algolia DocSearch (free for open-source, easy setup)</span>
+<span class="code-comment">// Option B: Pagefind (static, zero cost, runs at build time) ← recommended</span>
+<span class="code-comment">// Option C: Orama (in-memory, works with Next.js API routes)</span>
+
+<span class="code-comment">// Build your search index from the universal content model:</span>
+<span class="code-type">const</span> searchIndex = allContent.map(item => ({
+  id: item.slug,
+  title: item.title,
+  description: item.description,
+  type: item.category,   <span class="code-comment">// tool / article / project / travel / finance</span>
+  tags: item.tags,
+  url: item.canonicalUrl
+}))
+<span class="code-comment">// Pagefind indexes at build — zero runtime cost, works with SSG</span>
+          </div>
+          <div class="note">Pagefind is the best option for a mostly-static site. It indexes at build time, adds &lt;2KB to the page, and gives you faceted search (filter by type: tool/article/travel) for free.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ CONTENT MODEL -->
+    <div class="section" id="section-content-model">
+      <div class="section-label">Data Architecture</div>
+      <div class="section-title">Universal Content Model</div>
+      <p class="section-desc">Everything shares a base type. This makes sitemaps, RSS feeds, search indexes, tag pages, related content, and OG images automatic.</p>
+
+      <div class="impl-block open">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">1</div>
+          <div class="impl-title">Base type — DewContent</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="code-block">
+<span class="code-type">type</span> <span class="code-key">DewContent</span> = {
+  <span class="code-comment">// identity</span>
+  title: <span class="code-type">string</span>
+  slug: <span class="code-type">string</span>
+  description: <span class="code-type">string</span>
+  category: <span class="code-str">'project'</span> | <span class="code-str">'travel'</span> | <span class="code-str">'finance'</span> | <span class="code-str">'music'</span> | <span class="code-str">'anime'</span> | <span class="code-str">'tool'</span> | <span class="code-str">'writing'</span> | <span class="code-str">'singapore'</span>
+  tags: <span class="code-type">string</span>[]      <span class="code-comment">// shared across categories — enables cross-linking</span>
+
+  <span class="code-comment">// timestamps</span>
+  datePublished: <span class="code-type">string</span>
+  dateUpdated: <span class="code-type">string</span>   <span class="code-comment">// show prominently on finance/travel/tool pages</span>
+
+  <span class="code-comment">// status</span>
+  status: <span class="code-str">'draft'</span> | <span class="code-str">'published'</span> | <span class="code-str">'archived'</span>
+  featured: <span class="code-type">boolean</span>
+
+  <span class="code-comment">// content</span>
+  readingTime?: <span class="code-type">number</span>
+  sourceLinks?: <span class="code-type">string</span>[]   <span class="code-comment">// for finance/data pages — cite your sources</span>
+  relatedPages?: <span class="code-type">string</span>[]  <span class="code-comment">// slugs — auto-generate "related" sections</span>
+  canonicalUrl: <span class="code-type">string</span>
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">2</div>
+          <div class="impl-title">Extended types — Tool, TravelEntry, AnimeEntry, FinanceNote</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="code-block">
+<span class="code-type">type</span> <span class="code-key">DewTool</span> = DewContent & {
+  toolType: <span class="code-str">'calculator'</span> | <span class="code-str">'generator'</span> | <span class="code-str">'dashboard'</span> | <span class="code-str">'visualizer'</span>
+  dataSources?: <span class="code-type">string</span>[]
+  shareCardTemplate?: <span class="code-type">string</span>  <span class="code-comment">// template for shareable result cards</span>
+}
+
+<span class="code-type">type</span> <span class="code-key">TravelEntry</span> = DewContent & {
+  country: <span class="code-type">string</span>
+  city?: <span class="code-type">string</span>
+  coordinates?: [<span class="code-type">number</span>, <span class="code-type">number</span>]
+  budgetRange?: { low: <span class="code-type">number</span>, mid: <span class="code-type">number</span>, high: <span class="code-type">number</span>, currency: <span class="code-type">string</span> }
+  visitedDates?: <span class="code-type">string</span>[]
+  tripTags?: (<span class="code-str">'solo-friendly'</span> | <span class="code-str">'student-budget'</span> | <span class="code-str">'nature'</span> | <span class="code-str">'food'</span> | <span class="code-str">'diving'</span> | <span class="code-str">'anime-pilgrimage'</span>)[]
+  wouldReturn: <span class="code-type">boolean</span>
+  scores?: { food: <span class="code-type">number</span>, cost: <span class="code-type">number</span>, transport: <span class="code-type">number</span>, safety: <span class="code-type">number</span>, solo: <span class="code-type">number</span> }
+}
+
+<span class="code-type">type</span> <span class="code-key">AnimeEntry</span> = DewContent & {
+  anilistId?: <span class="code-type">number</span>   <span class="code-comment">// link to AniList for live data</span>
+  malId?: <span class="code-type">number</span>       <span class="code-comment">// link to Jikan/MAL for extra data</span>
+  myScore?: <span class="code-type">number</span>    <span class="code-comment">// your personal rating 1-10</span>
+  status: <span class="code-str">'watching'</span> | <span class="code-str">'completed'</span> | <span class="code-str">'dropped'</span> | <span class="code-str">'plan-to-watch'</span>
+  genre: <span class="code-type">string</span>[]
+  studio?: <span class="code-type">string</span>
+}
+
+<span class="code-type">type</span> <span class="code-key">FinanceNote</span> = DewContent & {
+  sector: <span class="code-str">'energy'</span> | <span class="code-str">'uranium'</span> | <span class="code-str">'metals'</span> | <span class="code-str">'singapore'</span> | <span class="code-str">'macro'</span>
+  disclaimer: <span class="code-type">true</span>   <span class="code-comment">// required — forces you to include it</span>
+  dataAsOf?: <span class="code-type">string</span>
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">3</div>
+          <div class="impl-title">Content storage — MDX + JSON + CMS options</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <table class="ref-table">
+            <thead><tr><th>Content type</th><th>Recommended storage</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>Blog / essays / devlogs</td><td>MDX files in /content/writing/</td><td>Git-tracked, easy to write</td></tr>
+              <tr><td>Project case studies</td><td>MDX files in /content/projects/</td><td>Rich formatting, code blocks</td></tr>
+              <tr><td>Travel guides</td><td>MDX files in /content/travel/</td><td>Long-form, images, maps</td></tr>
+              <tr><td>Finance notes</td><td>MDX + frontmatter with disclaimer flag</td><td>Structured + rich text</td></tr>
+              <tr><td>Tool definitions</td><td>JSON/TS config files</td><td>Tools are code, not prose</td></tr>
+              <tr><td>Anime/music data</td><td>API-first + local JSON override</td><td>AniList/Jikan for base, your ratings local</td></tr>
+              <tr><td>Species field guide</td><td>JSON per species + MDX notes</td><td>Structured + personal narrative</td></tr>
+            </tbody>
+          </table>
+          <div class="note">Use <strong>Contentlayer</strong> or <strong>next-mdx-remote</strong> to transform MDX + frontmatter into typed objects matching your DewContent model. This gives you autocomplete and type safety across all content.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ APIS -->
+    <div class="section" id="section-apis">
+      <div class="section-label">Data Sources</div>
+      <div class="section-title">APIs & External Data — Complete Reference</div>
+      <p class="section-desc">Every API you'll use, its limits, auth requirements, and how to use it in Next.js.</p>
+
+      <table class="ref-table" style="margin-bottom:24px">
+        <thead>
+          <tr><th>API</th><th>Used for</th><th>Auth</th><th>Cost</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Jikan v4</td>
+            <td>/anime, /seasonal, /news</td>
+            <td>None</td>
+            <td>Free</td>
+            <td>Unofficial MAL wrapper. Rate limit: 3 req/sec, 60/min. Cache aggressively. Use /seasons/now for seasonal board.</td>
+          </tr>
+          <tr>
+            <td>AniList GraphQL</td>
+            <td>Watching list, scores, studio data</td>
+            <td>OAuth (for personal data)</td>
+            <td>Free</td>
+            <td>Preferred over Jikan for personal list. Use GraphQL to fetch exactly what you need. No rate limit if reasonable.</td>
+          </tr>
+          <tr>
+            <td>GitHub REST v3 / GraphQL v4</td>
+            <td>Contribution heatmap, repos, changelog</td>
+            <td>PAT (personal access token)</td>
+            <td>Free</td>
+            <td>Store PAT in env var. Use contributionsCollection for heatmap. Auto-generate changelogs from releases endpoint.</td>
+          </tr>
+          <tr>
+            <td>Spotify Web API</td>
+            <td>Now playing, top tracks, playlists</td>
+            <td>OAuth + PKCE (user auth)</td>
+            <td>Free</td>
+            <td>Keep client_secret server-side in /api/music. Refresh token flow required. See: spotify-now-playing pattern.</td>
+          </tr>
+          <tr>
+            <td>Alpha Vantage</td>
+            <td>Stock prices, forex, economic data</td>
+            <td>API key</td>
+            <td>Free (25 req/day)</td>
+            <td>Free tier very limited. Cache responses in KV store (Upstash/Vercel KV). Or use Yahoo Finance unofficial.</td>
+          </tr>
+          <tr>
+            <td>FRED API</td>
+            <td>Macro data: interest rates, CPI, GDP</td>
+            <td>API key (free)</td>
+            <td>Free</td>
+            <td>Federal Reserve data. Very reliable. Great for macro dashboard. Register at fred.stlouisfed.org</td>
+          </tr>
+          <tr>
+            <td>frankfurter.app</td>
+            <td>Exchange rates</td>
+            <td>None</td>
+            <td>Free</td>
+            <td>Open-source, no API key needed. Daily rates from ECB. Perfect for /travel/tools/exchange-rate-cheatsheet</td>
+          </tr>
+          <tr>
+            <td>NUSMods API</td>
+            <td>Module data, timetable, workload</td>
+            <td>None</td>
+            <td>Free</td>
+            <td>Public API at api.nusmods.com. Module codes, MC counts, workload ratings, exam dates. Perfect for /singapore/student-tools.</td>
+          </tr>
+          <tr>
+            <td>iNaturalist API</td>
+            <td>Species data, range maps, taxonomy</td>
+            <td>None (read), OAuth (write)</td>
+            <td>Free</td>
+            <td>For /travel/field-guide. Search by taxon name for species info, photos, observation data.</td>
+          </tr>
+          <tr>
+            <td>MusicBrainz API</td>
+            <td>Artist/album metadata, release dates</td>
+            <td>None</td>
+            <td>Free</td>
+            <td>Open music database. Rate limit: 1 req/sec. Good supplement to Spotify for J-pop/Mandopop artist data.</td>
+          </tr>
+          <tr>
+            <td>Open Exchange Rates</td>
+            <td>Historical exchange rates</td>
+            <td>API key</td>
+            <td>Free tier (1000/mo)</td>
+            <td>More reliable than frankfurter for historical data. Use for trip budget calculator currency conversion.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note amber">
+        <strong>API key security:</strong> All keys go in <code>.env.local</code> and are only accessed in Server Components, Route Handlers (<code>/api/*</code>), or <code>next.config.js</code> server-side runtime. Never in <code>NEXT_PUBLIC_*</code> unless the API explicitly allows public exposure (frankfurter, NUSMods, Jikan do — they're keyless).
+      </div>
+
+      <div class="h3">Caching strategy for API data</div>
+      <div class="code-block">
+<span class="code-comment">// Jikan seasonal — cache 24 hours (data doesn't change intraday)</span>
+<span class="code-key">fetch</span>(<span class="code-str">'https://api.jikan.moe/v4/seasons/now'</span>, {
+  next: { revalidate: 86400 }
+})
+
+<span class="code-comment">// Finance data — cache 1 hour</span>
+<span class="code-key">fetch</span>(alphaVantageUrl, { next: { revalidate: 3600 } })
+
+<span class="code-comment">// GitHub contribution heatmap — cache 6 hours</span>
+<span class="code-key">fetch</span>(githubGraphQL, { next: { revalidate: 21600 } })
+
+<span class="code-comment">// Exchange rates — cache 24 hours</span>
+<span class="code-key">fetch</span>(<span class="code-str">'https://api.frankfurter.app/latest'</span>, { next: { revalidate: 86400 } })
+
+<span class="code-comment">// For Vercel deployments: also use Upstash Redis for KV caching</span>
+<span class="code-comment">// to avoid hitting rate limits on re-deploys</span>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ SEO -->
+    <div class="section" id="section-seo">
+      <div class="section-label">Discoverability</div>
+      <div class="section-title">SEO Strategy — Per Section</div>
+      <p class="section-desc">Google rewards helpful, data-rich, trustworthy content. Tools, field guides, and calculators earn backlinks organically. Each section has its own SEO angle.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title">/tools — highest priority</div></div>
+          <div class="card-desc">Tools earn backlinks. Every tool page: what it does → who it's for → how to use → the tool → examples → FAQ → related tools.</div>
+          <div class="card-tags"><span class="tag">WebApplication schema</span><span class="tag">Free Online Tool suffix</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">/singapore — local SEO</div></div>
+          <div class="card-desc">Include "Singapore", "NUS", "NTU", "student" throughout. LocalBusiness schema isn't applicable but Person + location signals help.</div>
+          <div class="card-tags"><span class="tag">NUS CAP planner</span><span class="tag">Singapore cafes</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">/finance — trust signals</div></div>
+          <div class="card-desc">Show data source, methodology, assumptions, last-updated date, and disclaimer on every page. Glossary terms = long-tail SEO goldmine.</div>
+          <div class="card-tags"><span class="tag">Article schema</span><span class="tag">DefinedTerm schema</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">/travel — evergreen guides</div></div>
+          <div class="card-desc">"Japan trip cost Singapore student" style queries. HowTo schema for itineraries. FAQPage for tips. Personal experience + actual costs outrank generic guides.</div>
+          <div class="card-tags"><span class="tag">HowTo schema</span><span class="tag">FAQPage schema</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">/entertainment — niche wins</div></div>
+          <div class="card-desc">"[Anime] watch order", "[Series] review" get consistent search traffic. "Mandopop guitar chords" has far less competition than English pop chords.</div>
+          <div class="card-tags"><span class="tag">Review schema</span><span class="tag">HowTo schema for guitar</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">/writing — internal linking</div></div>
+          <div class="card-desc">Link aggressively between verticals. A travel post links to the trip budget calculator. A finance note links to the DCA calculator. This builds topical authority.</div>
+          <div class="card-tags"><span class="tag">Article/BlogPosting schema</span><span class="tag">multi-tag posts</span></div>
+        </div>
+      </div>
+
+      <div class="h3">Non-negotiable technical SEO checklist</div>
+      <div class="checklist" id="seo-checklist">
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">Dynamic sitemap.ts covering all content routes (tools, posts, countries, tags)</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">robots.ts — allow all, disallow /api, /draft, /admin</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">generateMetadata() on every dynamic route with canonical URL</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">OG images for all shareable pages (tools, posts, projects, countries)</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">JSON-LD schema injected via &lt;script type="application/ld+json"&gt; in page head</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">"Last updated" date on finance, travel, tool, and anime pages</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">Alt text on all images. Lazy load non-critical images.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">Core Web Vitals: LCP &lt; 2.5s, CLS &lt; 0.1, INP &lt; 200ms</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">Tag pages auto-generated from content model (/tags/[tag])</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">RSS feed at /feed.xml covering all published content</div></div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ EMAILS -->
+    <div class="section" id="section-emails">
+      <div class="section-label">Contact Infrastructure</div>
+      <div class="section-title">Email Alias Strategy</div>
+      <p class="section-desc">Set up all aliases at launch. Route them all to one inbox via your domain provider. The routing cards on /contact let people self-select the right address.</p>
+
+      <div class="email-grid">
+        <div class="email-row"><div class="email-addr">hello@dew.codes</div><div class="email-use">General — default alias for the site</div></div>
+        <div class="email-row"><div class="email-addr">contact@dew.codes</div><div class="email-use">Professional — recruiters, collaborators</div></div>
+        <div class="email-row"><div class="email-addr">projects@dew.codes</div><div class="email-use">Project collaborations, code questions</div></div>
+        <div class="email-row"><div class="email-addr">support@dew.codes</div><div class="email-use">Bug reports, tool feedback</div></div>
+        <div class="email-row"><div class="email-addr">finance@dew.codes</div><div class="email-use">Finance dashboard feedback, corrections</div></div>
+        <div class="email-row"><div class="email-addr">travel@dew.codes</div><div class="email-use">Travel tips, collabs, corrections</div></div>
+        <div class="email-row"><div class="email-addr">music@dew.codes</div><div class="email-use">Music submissions, J-pop/Mandopop recs</div></div>
+        <div class="email-row"><div class="email-addr">anime@dew.codes</div><div class="email-use">Anime recommendations, corrections</div></div>
+        <div class="email-row"><div class="email-addr">corrections@dew.codes</div><div class="email-use">Factual errors — makes site look credible</div></div>
+        <div class="email-row"><div class="email-addr">security@dew.codes</div><div class="email-use">Vulnerability reports — future-proofing</div></div>
+        <div class="email-row"><div class="email-addr">press@dew.codes</div><div class="email-use">Media / press — future-proofing</div></div>
+        <div class="email-row"><div class="email-addr">beer@dew.codes</div><div class="email-use">Fun support alias — "buy me a beer"</div></div>
+      </div>
+
+      <div class="note">Use Cloudflare Email Routing (free) or ImprovMX to route all aliases to one personal inbox. Takes 10 minutes to set up. No email server required.</div>
+
+      <div class="h3">/contact page structure</div>
+      <p style="color:var(--text2);font-size:13px;line-height:1.7">Routing cards, not a single email address. Each card: icon + question + pre-filled email subject. Examples: "Want to collaborate on a project?" → projects@ | "Found a bug or error?" → corrections@ | "Have an anime rec?" → anime@</p>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ MONETISE -->
+    <div class="section" id="section-monetise">
+      <div class="section-label">Revenue</div>
+      <div class="section-title">Monetisation — Tasteful by Design</div>
+      <p class="section-desc">Keep it transparent, specific, and never desperate. The goal is sustainable, not profitable-first.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="h3">Support tiers</div>
+          <div class="email-grid">
+            <div class="email-row"><div class="email-addr" style="min-width:80px">S$3</div><div class="email-use">Coffee — keeps me going</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:80px">S$7</div><div class="email-use">Server hosting — Vercel / Fly.io</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:80px">S$12</div><div class="email-use">Guitar strings — D'Addario set</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:80px">S$25</div><div class="email-use">API bills — finance data sources</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:80px">S$50</div><div class="email-use">Project sponsor — named on wall</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="h3">Transparency costs page</div>
+          <div class="email-grid">
+            <div class="email-row"><div class="email-addr" style="min-width:160px">Vercel Pro / Fly.io</div><div class="email-use">~$20/mo</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:160px">Finance APIs</div><div class="email-use">$0–$30/mo depending on tier</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:160px">Domain (dew.codes)</div><div class="email-use">~$20/yr</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:160px">Upstash Redis (KV)</div><div class="email-use">Free → $10/mo</div></div>
+            <div class="email-row"><div class="email-addr" style="min-width:160px">Analytics (Plausible)</div><div class="email-use">$9/mo — privacy-friendly</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="h3">Other revenue paths (in order of tastiness)</div>
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon" style="background:rgba(62,207,142,0.2);border-color:var(--green);color:var(--green);font-size:9px">✓</div><div class="check-text"><strong style="color:var(--text)">Affiliate links:</strong> Dive gear, travel gear, books, finance tools. Disclose clearly at /legal/affiliate-disclosure. Never let affiliate bias your recommendations.</div></div>
+        <div class="check-item"><div class="check-icon" style="background:rgba(62,207,142,0.2);border-color:var(--green);color:var(--green);font-size:9px">✓</div><div class="check-text"><strong style="color:var(--text)">Newsletter sponsorship:</strong> Once Dew Dispatch has 1k+ subscribers, a single tasteful sponsor per issue. Common in niche tech/finance newsletters.</div></div>
+        <div class="check-item"><div class="check-icon" style="background:rgba(62,207,142,0.2);border-color:var(--green);color:var(--green);font-size:9px">✓</div><div class="check-text"><strong style="color:var(--text)">Buy Me a Coffee / Ko-fi:</strong> Simple, low-friction. Can embed widget in footer. Not gross because you're transparent about costs.</div></div>
+        <div class="check-item"><div class="check-icon"></div><div class="check-text"><strong style="color:var(--text)">Premium templates (later):</strong> Notion templates, travel planning sheets, finance watchlist templates. S$5–15 each. Only worth it with traffic.</div></div>
+        <div class="check-item"><div class="check-icon"></div><div class="check-text"><strong style="color:var(--text)">Sponsored widgets (later):</strong> A relevant financial tool or travel app sponsoring a specific dashboard widget. Only consider this at scale.</div></div>
+      </div>
+
+      <div class="note red"><strong>Never:</strong> Pop-up ads, intrusive banners, affiliate links that aren't disclosed, sponsored content that looks editorial, paywalled tools. These destroy trust faster than they earn money.</div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ SHARING -->
+    <div class="section" id="section-sharing">
+      <div class="section-label">Growth</div>
+      <div class="section-title">Viral & Sharing Features</div>
+      <p class="section-desc">Build things people can screenshot, share, or embed. Every tool result should produce something worth sharing.</p>
+
+      <div class="h3">Shareable result cards — every tool should generate one</div>
+      <div class="card-grid">
+        <div class="card"><div class="card-title" style="margin-bottom:8px">Trip Budget Calculator</div><div class="card-desc" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">"My Japan trip estimate: S$1,420 for 7 days — Budget mode"</div></div>
+        <div class="card"><div class="card-title" style="margin-bottom:8px">Anime Picker</div><div class="card-desc" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">"My mood pick: Frieren + Bocchi + Violet Evergarden"</div></div>
+        <div class="card"><div class="card-title" style="margin-bottom:8px">Guitar Streak</div><div class="card-desc" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">"14-day guitar practice streak 🎸"</div></div>
+        <div class="card"><div class="card-title" style="margin-bottom:8px">NUS CAP Planner</div><div class="card-desc" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--green)">"Projected CAP: 4.32 — Sem 4 plan"</div></div>
+      </div>
+
+      <div class="h3">Implementation: share card API</div>
+      <div class="code-block">
+<span class="code-comment">// /api/share-card?tool=trip-budget&result=1420&days=7&country=japan</span>
+<span class="code-comment">// Returns a PNG via @vercel/og / satori</span>
+<span class="code-comment">// User clicks "Share" → copies image to clipboard or downloads</span>
+
+<span class="code-comment">// In your tool component:</span>
+<span class="code-type">const</span> shareUrl = <span class="code-str">`/api/share-card?tool=trip-budget&amp;result=${totalCost}&amp;days=${days}&amp;country=${country}`</span>
+&lt;<span class="code-type">button</span> onClick={() => navigator.clipboard.write([new ClipboardItem({ 'image/png': fetch(shareUrl) })])}&gt;
+  Share result
+&lt;/<span class="code-type">button</span>&gt;
+      </div>
+
+      <div class="h3">Public badges — /dew-badges</div>
+      <div class="card-grid">
+        <div class="card"><div class="tag" style="font-size:12px;padding:4px 10px;margin-bottom:8px;background:rgba(255,110,199,0.15);color:var(--pink)">Anime Taste</div><div class="card-desc">Slice-of-Life Maxxer / Mecha Head / Isekai Enjoyer</div></div>
+        <div class="card"><div class="tag" style="font-size:12px;padding:4px 10px;margin-bottom:8px;background:rgba(74,158,255,0.15);color:var(--blue)">Travel Style</div><div class="card-desc">Budget Explorer / Nature Chaser / City Hopper</div></div>
+        <div class="card"><div class="tag" style="font-size:12px;padding:4px 10px;margin-bottom:8px;background:rgba(62,207,142,0.15);color:var(--green)">Finance Style</div><div class="card-desc">DCA Monk / Value Investor / Macro Watcher</div></div>
+        <div class="card"><div class="tag" style="font-size:12px;padding:4px 10px;margin-bottom:8px;background:rgba(124,106,255,0.15);color:var(--accent2)">Builder Style</div><div class="card-desc">Weekend Hacker / Ship-Fast Dev / Researcher</div></div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ LEGAL -->
+    <div class="section" id="section-legal">
+      <div class="section-label">Trust & Safety</div>
+      <div class="section-title">Legal & Trust Infrastructure</div>
+
+      <div class="note red"><strong>Before publishing any finance content:</strong> /legal/financial-disclaimer must be live and linked from every finance page. "Personal research only. Not financial advice." Must be visible without scrolling.</div>
+
+      <div class="h3">Required pages before launch</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/privacy — PDPA (Singapore) compliant. What you collect, why, how long you keep it.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/terms — Site use terms. Basic but necessary.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/financial-disclaimer — Required before any finance page goes public.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/ai-disclosure — If any content is AI-assisted. Google requires disclosure.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/affiliate-disclosure — Required by FTC/MAS before any affiliate links.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/data-sources — Which APIs, what data, update frequency, limitations.</div></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><div class="check-text">/legal/corrections — corrections@dew.codes. How you handle errors.</div></div>
+      </div>
+
+      <div class="h3">Analytics — privacy-friendly options</div>
+      <div class="code-block">
+<span class="code-comment">// Recommended: Plausible Analytics</span>
+<span class="code-comment">// - No cookies, GDPR compliant, $9/mo</span>
+<span class="code-comment">// - Shows: pages, referrers, countries, devices</span>
+<span class="code-comment">// - No personal data collected</span>
+
+<span class="code-comment">// Alternative: Umami (self-hosted, free)</span>
+<span class="code-comment">// - Deploy on Vercel + Supabase</span>
+<span class="code-comment">// - Complete control over data</span>
+
+<span class="code-comment">// Avoid: Google Analytics 4</span>
+<span class="code-comment">// - Requires cookie consent banner (PDPA/GDPR)</span>
+<span class="code-comment">// - Heavyweight, overkill for personal site</span>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ MVP -->
+    <div class="section" id="section-mvp">
+      <div class="section-label">Build Plan</div>
+      <div class="section-title">MVP — Phase 1</div>
+      <p class="section-desc">Launch with depth, not breadth. These pages give you something real in every vertical without being overwhelming to build.</p>
+
+      <div class="mvp-phase">
+        <div class="mvp-phase-header">
+          <div class="phase-num">1</div>
+          <div class="phase-info">
+            <div class="phase-title">Foundation (Week 1–2)</div>
+            <div class="phase-sub">Core infrastructure before any content</div>
+          </div>
+          <div class="phase-badge" style="background:rgba(255,95,95,0.15);color:var(--red)">prerequisite</div>
+        </div>
+        <div class="mvp-phase-body">
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>Next.js App Router setup</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>Universal content model + types</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>Global layout + route groups</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>sitemap.ts + robots.ts</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>/legal/financial-disclaimer</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>/legal/privacy + /legal/terms</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>Email aliases configured</div>
+            <div class="page-item"><span class="dot" style="background:var(--red)"></span>Plausible/Umami analytics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mvp-phase">
+        <div class="mvp-phase-header">
+          <div class="phase-num">2</div>
+          <div class="phase-info">
+            <div class="phase-title">First 10 pages (Week 3–6)</div>
+            <div class="phase-sub">One strong page per vertical — launch with this</div>
+          </div>
+          <div class="phase-badge" style="background:rgba(245,166,35,0.15);color:var(--amber)">launch target</div>
+        </div>
+        <div class="mvp-phase-body">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Build in this order. Each one adds a new vertical.</div>
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/ — command-center homepage</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/about/now — makes site feel alive</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/projects/liveling — flagship case study</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/projects/nuschedule — Singapore relevance</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/tools/cap-planner — NUS student traffic</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/tools/trip-budget-calculator — broad utility</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/tools/anime-picker — fun + shareable</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/travel/japan/first-timer-guide — evergreen</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/finance/dca-calculator — search demand</div>
+            <div class="page-item"><span class="dot" style="background:var(--amber)"></span>/support + /newsletter/subscribe</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mvp-phase">
+        <div class="mvp-phase-header">
+          <div class="phase-num">3</div>
+          <div class="phase-info">
+            <div class="phase-title">Deepen each vertical (Month 2–3)</div>
+            <div class="phase-sub">Fill out the standalone-site feel for each hub</div>
+          </div>
+          <div class="phase-badge" style="background:rgba(62,207,142,0.15);color:var(--green)">post-launch</div>
+        </div>
+        <div class="mvp-phase-body">
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/singapore/student-tools hub</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/entertainment/anime standalone hub</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/entertainment/music/jpop starter-pack</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/travel/diving logbook</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/market-outlook hub</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/collections/ first 3 bundles</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/search (Pagefind)</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/writing/newsletter archive</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/projects/diabetes-connect case study</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/lab/failed-experiments first entries</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ PHASE 2 -->
+    <div class="section" id="section-phase2">
+      <div class="section-label">Build Plan</div>
+      <div class="section-title">Phase 2 — Expand & Deepen</div>
+      <p class="section-desc">Month 3–6. Each vertical becomes a proper standalone hub. APIs integrated. Tools polished.</p>
+
+      <div class="impl-block open">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">→</div>
+          <div class="impl-title">Finance hub becomes a research destination</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/dashboards/macro-dashboard</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/dashboards/commodity-dashboard</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/quant-tools/backtester</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/glossary (first 20 terms)</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/sectors/uranium deep-dive</div>
+            <div class="page-item"><span class="dot" style="background:var(--green)"></span>/finance/notes/weekly-market-notes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">→</div>
+          <div class="impl-title">Travel hub becomes genuinely useful</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/japan/budget-breakdown</div>
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/japan/food-map</div>
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/japan/mistakes</div>
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/diving full logbook</div>
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/field-guide first species</div>
+            <div class="page-item"><span class="dot" style="background:var(--blue)"></span>/travel/tools/packing-list-generator</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impl-block">
+        <div class="impl-block-header" onclick="toggleImpl(this)">
+          <div class="impl-number">→</div>
+          <div class="impl-title">Entertainment hub — interactive features</div>
+          <div class="impl-chevron">▼</div>
+        </div>
+        <div class="impl-body">
+          <div class="page-list">
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/entertainment/anime/tier-list</div>
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/entertainment/anime/seasonal (Jikan)</div>
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/entertainment/music/guitar/chord-library</div>
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/entertainment/music/guitar/strumming-patterns</div>
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/entertainment/music/jpop/artist-index</div>
+            <div class="page-item"><span class="dot" style="background:var(--pink)"></span>/dew-badges quiz</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ PHASE 3 -->
+    <div class="section" id="section-phase3">
+      <div class="section-label">Build Plan</div>
+      <div class="section-title">Phase 3 — Full Vision</div>
+      <p class="section-desc">Month 6+. Community, accounts, advanced tools, newsletter monetisation. Only build these when you have returning users.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">Light community</div>
+          <div class="card-desc">Guestbook, polls, feature voting, "Ask Kevin" box. No full social network. Surprisingly charming at small scale.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">User accounts (optional)</div>
+          <div class="card-desc">Save anime recs, travel itineraries, finance watchlists, guitar streaks. Only add when you have repeat users. NextAuth.js + Supabase.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">Advanced quant tools</div>
+          <div class="card-desc">Monte Carlo simulator, backtester, drawdown visualizer. Python backend on Fly.io or Vercel serverless. Heavy compute → separate service.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">Newsletter monetisation</div>
+          <div class="card-desc">1k subscribers → approach one tasteful sponsor per issue. Use Resend (email API) + your own subscription management or Buttondown.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">Content API</div>
+          <div class="card-desc">Open your /api endpoints to others. Other Singapore students can query your NUSMods data, your anime picks API, your travel budget data.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">Collections as landing pages</div>
+          <div class="card-desc">Each /collections/[slug] becomes a mini-landing page with its own OG image and SEO metadata. Bundle your best content together.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════════ FLYWHEEL -->
+    <div class="section" id="section-flywheel">
+      <div class="section-label">Sustainability</div>
+      <div class="section-title">Content Flywheel</div>
+      <p class="section-desc">A repeatable rhythm. The site stays alive without requiring daily output.</p>
+
+      <div class="two-col">
+        <div>
+          <div class="impl-block open">
+            <div class="impl-block-header" onclick="toggleImpl(this)">
+              <div class="impl-number" style="background:var(--accent)">W</div>
+              <div class="impl-title">Weekly (20–30 min each)</div>
+              <div class="impl-chevron">▼</div>
+            </div>
+            <div class="impl-body">
+              <div class="checklist">
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 devlog — what you worked on in Liveling or any project</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 market note — one chart + one observation, no predictions</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 entertainment rec — anime ep, song, game moment</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Update /about/now if anything changed</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impl-block">
+            <div class="impl-block-header" onclick="toggleImpl(this)">
+              <div class="impl-number" style="background:var(--green)">M</div>
+              <div class="impl-title">Monthly</div>
+              <div class="impl-chevron">▼</div>
+            </div>
+            <div class="impl-body">
+              <div class="checklist">
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 deep project case study or devlog series</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 travel or field guide page</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">1 new tool or meaningful tool update</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Dew Dispatch newsletter issue</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="impl-block open">
+            <div class="impl-block-header" onclick="toggleImpl(this)">
+              <div class="impl-number" style="background:var(--amber)">Q</div>
+              <div class="impl-title">Quarterly</div>
+              <div class="impl-chevron">▼</div>
+            </div>
+            <div class="impl-body">
+              <div class="checklist">
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Site roadmap update — what you're planning next</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Personal review — what you built, learned, explored</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Best discoveries — books, tools, anime, music</div></div>
+                <div class="check-item"><div class="check-icon"></div><div class="check-text">Transparency update — traffic, costs, what's working</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note" style="margin-top:12px">
+            <strong>The key insight:</strong> A devlog, a market note, and an entertainment rec are all just quick observations written down. At this cadence the site always feels alive without you burning out.
+          </div>
+          <div class="note green" style="margin-top:12px">
+            <strong>Cross-posting:</strong> Every piece of writing also lives in its vertical. A Japan devlog lives in /travel/japan/blog AND /writing/travelogues. One piece of content, two canonical homes.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .content -->
+</div><!-- .main -->
+</div><!-- .shell -->
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('visible');
+  el.classList.add('active');
+}
+
+function toggleImpl(header) {
+  const block = header.parentElement;
+  block.classList.toggle('open');
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  const icon = item.querySelector('.check-icon');
+  if (item.classList.contains('checked')) icon.textContent = '✓';
+  else icon.textContent = '';
+}
+
+function filterTree(type, btn) {
+  document.querySelectorAll('.topbar-pills .pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  // Visual highlight in tree
+  const body = document.getElementById('tree-body');
+  if (!body) return;
+  const comments = body.querySelectorAll('.comment');
+  comments.forEach(c => {
+    c.style.opacity = '0.25';
+    c.style.transition = 'opacity 0.2s';
+  });
+  if (type === 'all') {
+    comments.forEach(c => c.style.opacity = '1');
+    return;
+  }
+  const map = { suggestion: 'suggestion', seo: 'seo', api: 'api-note', mvp: 'suggestion' };
+  const cls = map[type];
+  if (type === 'mvp') {
+    body.querySelectorAll('.comment.suggestion').forEach(c => {
+      if (c.textContent.includes('🚀')) c.style.opacity = '1';
+    });
+  } else {
+    body.querySelectorAll('.comment.' + cls).forEach(c => c.style.opacity = '1');
+  }
+  // Always show warns
+  body.querySelectorAll('.comment.warn').forEach(c => c.style.opacity = '0.7');
+}
+</script>
+
+</body>
+</html>
