@@ -8,7 +8,4 @@ dist/
 coverage/
 public/search-index.json
 tsconfig.tsbuildinfo
-blogContent.md
-design-system.md
-ogideation.md
-rationale.md
+.private-md/
