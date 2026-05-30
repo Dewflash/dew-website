@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Generated from content-model.md — core content types for dew.codes
 
 export type ContentCategory =
@@ -276,14 +277,14 @@ export type DewCollection = DewContent & {
 // Content registry interface
 export interface ContentRegistry {
   getAllContent(): DewContent[]
-  getContentById(id: string): DewContent | undefined
-  getContentBySlug(slug: string): DewContent | undefined
-  getContentByCategory(category: ContentCategory): DewContent[]
-  getContentByTag(tag: string): DewContent[]
-  getFeaturedContent(category?: ContentCategory): DewContent[]
+  getContentById(_id: string): DewContent | undefined
+  getContentBySlug(_slug: string): DewContent | undefined
+  getContentByCategory(_category: ContentCategory): DewContent[]
+  getContentByTag(_tag: string): DewContent[]
+  getFeaturedContent(_category?: ContentCategory): DewContent[]
   getPublishedContent(): DewContent[]
-  getRecentContent(limit?: number, category?: ContentCategory): DewContent[]
-  getRelatedContent(id: string, limit?: number): DewContent[]
-  searchContent(query: string): DewContent[]
+  getRecentContent(_limit?: number, _category?: ContentCategory): DewContent[]
+  getRelatedContent(_id: string, _limit?: number): DewContent[]
+  searchContent(_query: string): DewContent[]
   getAllPaths(): string[]
 }
