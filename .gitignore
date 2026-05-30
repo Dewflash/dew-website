@@ -7,3 +7,9 @@ dist/
 /.pnp.js
 coverage/
 public/search-index.json
+personal-notes.md
+README.md
+blogContent.md
+design-system.md
+ogideation.md
+rationale.md
